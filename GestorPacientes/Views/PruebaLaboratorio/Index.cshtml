@@ -1,0 +1,48 @@
+﻿@model IEnumerable<GestorPacientes.Core.Application.ViewModels.PruebaLaboratorios.PruebaLaboratorioViewModel>
+@using GestorPacientes.Core.Application.ViewModels.PruebaLaboratorios
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<div class="container mt-4">
+    <h2>Mantenimiento de Usuarios</h2>
+    <div class="mb-3">
+        <a class="btn btn-primary" asp-action="Create">Crear Prueba de Laboratorio</a>
+    </div>
+
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.Nombre)</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.Nombre</td>
+                        <td>
+                            <a class="btn btn-sm btn-warning"
+                               asp-action="Edit"
+                               asp-route-id="@user.Id">Editar</a>
+                            <a class="btn btn-sm btn-danger"
+                               asp-action="Delete"
+                               asp-route-id="@user.Id">Eliminar</a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-center">No se encontraron Pruebas de Laboratorio.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

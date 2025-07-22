@@ -1,0 +1,17 @@
+﻿@model GestorPacientes.Core.Application.ViewModels.Pacientes.PacienteViewModel
+@{
+    ViewData["Title"] = "Eliminar Paciente";
+}
+
+<div class="container mt-4">
+    <h2>Eliminar Paciente</h2>
+    <div class="alert alert-warning" role="alert">
+        ¿Está seguro que desea eliminar este paciente?
+    </div>
+    <form asp-action="DeletePost" method="post">
+        <!-- Campo oculto para el Id del paciente -->
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <a class="btn btn-secondary" asp-action="Index">Cancelar</a>
+    </form>
+</div>

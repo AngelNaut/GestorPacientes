@@ -1,0 +1,55 @@
+﻿@model IEnumerable<GestorPacientes.Core.Application.ViewModels.Usuarios.UsuarioViewModel>
+@using GestorPacientes.Core.Application.ViewModels.Usuarios
+
+@{
+    ViewData["Title"] = "Mantenimiento de Usuarios";
+}
+
+<div class="container mt-4">
+    <h2>Mantenimiento de Usuarios</h2>
+    <div class="mb-3">
+        <a class="btn btn-primary" asp-action="Create">Crear Usuario</a>
+    </div>
+
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.Nombre)</th>
+                <th>@Html.DisplayNameFor(m => m.Apellido)</th>
+                <th>@Html.DisplayNameFor(m => m.Correo)</th>
+                <th>@Html.DisplayNameFor(m => m.NombreUsuario)</th>
+                <th>@Html.DisplayNameFor(m => m.TipoUsuario)</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.Nombre</td>
+                        <td>@user.Apellido</td>
+                        <td>@user.Correo</td>
+                        <td>@user.NombreUsuario</td>
+                        <td>@user.TipoUsuario</td>
+                        <td>
+                            <a class="btn btn-sm btn-warning"
+                               asp-action="Edit"
+                               asp-route-id="@user.Id">Editar</a>
+                            <a class="btn btn-sm btn-danger"
+                               asp-action="Delete"
+                               asp-route-id="@user.Id">Eliminar</a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-center">No se encontraron usuarios.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

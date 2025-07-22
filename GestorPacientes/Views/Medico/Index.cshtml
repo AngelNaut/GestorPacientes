@@ -1,0 +1,60 @@
+﻿@model IEnumerable<GestorPacientes.Core.Application.ViewModels.Medicos.MedicoViewModel>
+@using GestorPacientes.Core.Application.ViewModels.Medicos
+
+@{
+    ViewData["Title"] = "Mantenimiento de Medicos";
+}
+
+<div class="container mt-4">
+    <h2>Mantenimiento de Medicos</h2>
+    <div class="mb-3">
+        <a class="btn btn-primary" asp-action="Create">Crear Medico</a>
+    </div>
+
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.Nombre)</th>
+                <th>@Html.DisplayNameFor(m => m.Apellido)</th>
+                <th>@Html.DisplayNameFor(m => m.Correo)</th>
+                <th>@Html.DisplayNameFor(m => m.Telefono)</th>
+                <th>@Html.DisplayNameFor(m => m.Cedula)</th>
+                <th>@Html.DisplayNameFor(m => m.Foto)</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.Nombre</td>
+                        <td>@user.Apellido</td>
+                        <td>@user.Correo</td>
+                        <td>@user.Telefono</td>
+                        <td>@user.Cedula</td>
+                        <td>
+                            <img src="@user.Foto" alt="Foto" width="100" height="100" />
+                        </td>
+
+                        <td>
+                            <a class="btn btn-sm btn-warning"
+                               asp-action="Edit"
+                               asp-route-id="@user.Id">Editar</a>
+                            <a class="btn btn-sm btn-danger"
+                               asp-action="Delete"
+                               asp-route-id="@user.Id">Eliminar</a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-center">No se encontraron medicos.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

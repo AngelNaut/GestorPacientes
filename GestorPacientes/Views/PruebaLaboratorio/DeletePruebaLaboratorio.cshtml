@@ -1,0 +1,17 @@
+﻿@model GestorPacientes.Core.Application.ViewModels.PruebaLaboratorios.PruebaLaboratorioViewModel
+@{
+    ViewData["Title"] = "Eliminar Usuario";
+}
+
+<div class="container mt-4">
+    <h2>Eliminar Prueba de Laboratorio</h2>
+    <div class="alert alert-warning" role="alert">
+        ¿Está seguro que desea eliminar esta Prueba de Laboratorio?
+    </div>
+    <form asp-action="DeletePost" method="post">
+        <!-- Campo oculto para el Id del usuario -->
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Aceptar</button>
+        <a class="btn btn-secondary" asp-action="Index">Cancelar</a>
+    </form>
+</div>

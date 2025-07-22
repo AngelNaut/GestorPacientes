@@ -1,0 +1,56 @@
+﻿@model GestorPacientes.Core.Application.ViewModels.Usuarios.SaveUsuarioViewModel
+@{
+    ViewData["Title"] = "Crear Usuario";
+}
+
+<div class="container mt-4">
+    <h2>Crear Usuario</h2>
+    <form asp-action="Create" method="post">
+        <!-- Muestra errores de validación -->
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="form-group">
+            <label asp-for="Nombre" class="control-label"></label>
+            <input asp-for="Nombre" class="form-control" />
+            <span asp-validation-for="Nombre" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Apellido" class="control-label"></label>
+            <input asp-for="Apellido" class="form-control" />
+            <span asp-validation-for="Apellido" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Correo" class="control-label"></label>
+            <input asp-for="Correo" class="form-control" type="email" />
+            <span asp-validation-for="Correo" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="NombreUsuario" class="control-label"></label>
+            <input asp-for="NombreUsuario" class="form-control" />
+            <span asp-validation-for="NombreUsuario" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Contrasena" class="control-label">Contraseña</label>
+            <input asp-for="Contrasena" class="form-control" type="password" />
+            <span asp-validation-for="Contrasena" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="ConfirmarContrasena" class="control-label">Confirmar Contraseña</label>
+            <input asp-for="ConfirmarContrasena" class="form-control" type="password" />
+            <span asp-validation-for="ConfirmarContrasena" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="TipoUsuario" class="control-label">Tipo de Usuario</label>
+            <select asp-for="TipoUsuario" class="form-control">
+                <option value="">Seleccione un tipo</option>
+                <option value="Administrador">Administrador</option>
+                <option value="Asistente">Asistente</option>
+            </select>
+            <span asp-validation-for="TipoUsuario" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Crear Usuario</button>
+        <a class="btn btn-secondary" asp-action="Index">Cancelar</a>
+    </form>
+</div>
+
+

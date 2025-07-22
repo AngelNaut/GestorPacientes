@@ -1,0 +1,26 @@
+﻿@model GestorPacientes.Core.Application.ViewModels.PruebaLaboratorios.EditPruebaLaboratorioViewModel
+@{
+    ViewData["Title"] = "Editar Prueba de Laboratorio";
+}
+
+<div class="container mt-4">
+    <h2>Editar Usuario</h2>
+    <form asp-action="Edit" method="post">
+        <!-- Muestra errores de validación -->
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <!-- Campo oculto para el Id del usuario -->
+        <input type="hidden" asp-for="Id" />
+
+        <div class="form-group">
+            <label asp-for="Nombre" class="control-label"></label>
+            <input asp-for="Nombre" class="form-control" />
+            <span asp-validation-for="Nombre" class="text-danger"></span>
+        </div>
+   
+        <button type="submit" class="btn btn-primary">Guardar Prueba</button>
+        <a class="btn btn-secondary" asp-action="Index">Volver</a>
+    </form>
+</div>
+
+

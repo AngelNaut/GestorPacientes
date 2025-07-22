@@ -1,0 +1,54 @@
+﻿@model IEnumerable<GestorPacientes.Core.Application.ViewModels.Pacientes.PacienteViewModel>
+@{
+    ViewData["Title"] = "Mantenimiento de Pacientes";
+}
+
+<div class="container mt-4">
+    <h2>Mantenimiento de Pacientes</h2>
+    <div class="mb-3">
+        <a class="btn btn-primary" asp-action="Create">Crear Paciente</a>
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Teléfono</th>
+                <th>Dirección</th>
+                <th>Cédula</th>
+                <th>Fecha de Nacimiento</th>
+                <th>Foto</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var paciente in Model)
+                {
+                    <tr>
+                        <td>@paciente.Nombre</td>
+                        <td>@paciente.Apellido</td>
+                        <td>@paciente.Telefono</td>
+                        <td>@paciente.Direccion</td>
+                        <td>@paciente.Cedula</td>
+                        <td>@paciente.FechaNacimiento.ToShortDateString()</td>
+                        <td>
+                            <img src="@paciente.Foto" alt="Foto" width="100" height="100" />
+                        </td>
+                        <td>
+                            <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@paciente.Id">Editar</a>
+                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@paciente.Id">Eliminar</a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="8" class="text-center">No se encontraron pacientes.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

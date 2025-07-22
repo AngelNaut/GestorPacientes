@@ -1,0 +1,60 @@
+﻿@model IEnumerable<GestorPacientes.Core.Application.ViewModels.ResultadoLaboratorios.ResultadoLaboratorioViewModel>
+
+@{
+    ViewData["Title"] = "Resultados Pendientes";
+}
+
+<h2>Resultados de Laboratorio Pendientes</h2>
+
+<!-- Formulario para filtrar por cédula -->
+<form asp-action="Index" method="get" class="form-inline mb-3">
+    <div class="form-group">
+        <label for="cedula" class="mr-2">Cédula del Paciente:</label>
+        <input type="text"
+               name="cedula"
+               id="cedula"
+               class="form-control"
+               placeholder="Ingrese la cédula"
+               value="@ViewContext.HttpContext.Request.Query["cedula"]" />
+    </div>
+    <button type="submit" class="btn btn-primary ml-2">Buscar</button>
+</form>
+
+<table class="table table-bordered table-hover">
+    <thead class="thead-dark">
+        <tr>
+            <th>Paciente</th>
+            <th>Cédula</th>
+            <th>Prueba</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.PacienteNombre</td>
+                    <td>@item.PacienteCedula</td>
+                    <td>@item.PruebaNombre</td>
+                    <td>@item.Estado</td>
+                    <td>
+                        <a class="btn btn-sm btn-success"
+                           asp-action="Reportar"
+                           asp-route-id="@item.Id">
+                            Reportar Resultado
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center">No se encontraron resultados pendientes.</td>
+            </tr>
+        }
+    </tbody>
+</table>

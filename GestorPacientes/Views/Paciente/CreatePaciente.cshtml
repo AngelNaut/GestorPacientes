@@ -1,0 +1,61 @@
+﻿@model GestorPacientes.Core.Application.ViewModels.Pacientes.SavePacienteViewModel
+@{
+    ViewData["Title"] = "Crear Paciente";
+}
+
+<div class="container mt-4">
+    <h2>Crear Paciente</h2>
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <!-- Muestra errores de validación -->
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="form-group">
+            <label asp-for="Nombre" class="control-label"></label>
+            <input asp-for="Nombre" class="form-control" />
+            <span asp-validation-for="Nombre" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Apellido" class="control-label"></label>
+            <input asp-for="Apellido" class="form-control" />
+            <span asp-validation-for="Apellido" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Telefono" class="control-label"></label>
+            <input asp-for="Telefono" class="form-control" />
+            <span asp-validation-for="Telefono" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Direccion" class="control-label"></label>
+            <input asp-for="Direccion" class="form-control" />
+            <span asp-validation-for="Direccion" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Cedula" class="control-label"></label>
+            <input asp-for="Cedula" class="form-control" />
+            <span asp-validation-for="Cedula" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="FechaNacimiento" class="control-label"></label>
+            <input asp-for="FechaNacimiento" class="form-control" type="date" />
+            <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
+        </div>
+        <div class="form-group form-check">
+            <input asp-for="EsFumador" class="form-check-input" type="checkbox" />
+            <label asp-for="EsFumador" class="form-check-label"></label>
+            <span asp-validation-for="EsFumador" class="text-danger"></span>
+        </div>
+        <div class="form-group form-check">
+            <input asp-for="TieneAlergias" class="form-check-input" type="checkbox" />
+            <label asp-for="TieneAlergias" class="form-check-label"></label>
+            <span asp-validation-for="TieneAlergias" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="File" class="control-label">Suba una imagen</label>
+            <input required asp-for="File" class="form-control" type="file" />
+            <span asp-validation-for="File" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Crear Paciente</button>
+        <a class="btn btn-secondary" asp-action="Index">Cancelar</a>
+    </form>
+</div>

@@ -1,0 +1,32 @@
+﻿@using GestorPacientes.Core.Application.ViewModels.Login;
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="container-fluid">
+
+    <div class="row mt-5">
+        <div class="col-6 offset-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    @Html.ValidationSummary(false,"",new {@class = "text-danger"})
+                    <form method="post" asp-controller="Usuario" asp-action="Login">
+                        <div class="mb-3">
+                            <label asp-for="NombreUsuario" class="form-label">Nombre de usuario</label>
+                            <input class="form-control" asp-for="NombreUsuario">
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Contrasena" class="form-label">Contraseña</label>
+                            <input class="form-control" asp-for="Contrasena">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+                        <a asp-controller="Usuario" asp-action="Register" class="btn btn-warning">Registrarse</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
