@@ -12,11 +12,14 @@ namespace GestorPacientes.Infraestructure.Persistence
         public static void AddPersistenceDependency(this IServiceCollection services, IConfiguration configuration)
         {
             #region "DataBase Configuration"
+            //configuración de la base de datos
+            // Si se usa una base de datos en memoria, se configura para usarla
             if (configuration.GetValue<bool>("UseDatabaseInMemory"))
             {
                 var connectionString = configuration.GetConnectionString("DefaultConnection");
                 services.AddDbContext<GestorPacienteContext>(options => options.UseInMemoryDatabase("GestorPaciente"));
             }
+            // Si no se usa una base de datos en memoria, se configura para usar SQL Server
             else
             {
                 var connectionString = configuration.GetConnectionString("DefaultConnection");

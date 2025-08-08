@@ -83,8 +83,7 @@ namespace GestorPacientes.Controllers
         public IActionResult Create()
         {
             var vm = new SaveUsuarioViewModel();
-           
-            return View("CreateUsuario", vm);
+            return View(vm); // busca Views/Usuario/Create.cshtml
         }
 
        
