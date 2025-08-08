@@ -21,14 +21,14 @@ namespace GestorPacientes.UITests
         public void SetUp()
         {
             var options = new ChromeOptions();
-            // options.AddArgument("--headless=new"); // útil en CI
+           
             driver = new ChromeDriver(options);
             driver.Manage().Window.Maximize();
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(15);
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(12));
         }
 
-        [TearDown] // NUnit1032: disponer correctamente
+        [TearDown] 
         public void TearDown()
         {
             try { driver?.Quit(); }
@@ -53,7 +53,7 @@ namespace GestorPacientes.UITests
 
             driver.Navigate().GoToUrl($"{BaseUrl}/Usuario/Index");
 
-            // Editar el primer usuario de la tabla
+            
             wait.Until(d => d.FindElement(By.CssSelector("a.btn.btn-sm.btn-warning"))).Click();
             wait.Until(d => d.Url.Contains("/Usuario/Edit", StringComparison.OrdinalIgnoreCase));
 

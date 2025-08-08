@@ -15,7 +15,7 @@ namespace GestorPacientes.UITests
         public void SetUp()
         {
             var options = new ChromeOptions();
-            // options.AddArgument("--headless"); // Descomenta si quieres ejecutar sin abrir navegador
+          
             driver = new ChromeDriver(options);
             driver.Manage().Window.Maximize();
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
@@ -35,20 +35,19 @@ namespace GestorPacientes.UITests
         [Test]
         public void LoginConCredencialesValidas_DeberiaRedirigirADashboard()
         {
-            // 1. Ir al login
+           
             driver.Navigate().GoToUrl("https://localhost:7188/Usuario/Login");
 
-            // 2. Ingresar usuario y contraseña válidos
+            
             driver.FindElement(By.Id("NombreUsuario")).SendKeys("angel");
             driver.FindElement(By.Id("Contrasena")).SendKeys("123");
 
-            // 3. Enviar formulario
+           
             driver.FindElement(By.CssSelector("button[type='submit']")).Click();
 
-            // 4. Esperar redirección (ajusta si tu dashboard es diferente)
             wait.Until(drv => drv.Url.Contains("/Home"));
 
-            // 5. Validar que se redirigió correctamente
+           
             Assert.That(driver.Url, Does.Contain("/Home"));
         }
 
@@ -61,7 +60,7 @@ namespace GestorPacientes.UITests
             driver.FindElement(By.Id("Contrasena")).SendKeys("claveIncorrecta");
             driver.FindElement(By.CssSelector("button[type='submit']")).Click();
 
-            // Esperar y validar el mensaje de error exacto
+         
             wait.Until(driver =>
             {
                 try
