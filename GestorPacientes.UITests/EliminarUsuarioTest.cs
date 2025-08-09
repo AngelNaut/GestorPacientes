@@ -1,67 +1,17 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
+﻿using NUnit.Framework;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GestorPacientes.UITests
 {
-    public class EliminarUsuarioTest
+    public class EliminarUsuarioTest : BaseUiTest
     {
-        private ChromeDriver driver;           
-        private WebDriverWait wait;
-
-        private const string BaseUrl = "https://localhost:7188"; 
-        private const string AdminUser = "angel";
-        private const string AdminPass = "123";
-
-        [SetUp]
-        public void SetUp()
-        {
-            var options = new ChromeOptions();
-            
-            driver = new ChromeDriver(options);
-            driver.Manage().Window.Maximize();
-            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
-            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(15));
-
-            LoginSiEsNecesario();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            try { driver?.Quit(); }
-            finally { driver?.Dispose(); }
-            driver = null;
-        }
-
-        private void LoginSiEsNecesario()
-        {
-            driver.Navigate().GoToUrl($"{BaseUrl}/Usuario/Index");
-
-            if (driver.Url.Contains("/Usuario/Login", StringComparison.OrdinalIgnoreCase)
-                || driver.PageSource.Contains("Iniciar sesión", StringComparison.OrdinalIgnoreCase))
-            {
-                driver.Navigate().GoToUrl($"{BaseUrl}/Usuario/Login");
-
-                wait.Until(d => d.FindElement(By.Id("NombreUsuario")));
-                driver.FindElement(By.Id("NombreUsuario")).Clear();
-                driver.FindElement(By.Id("NombreUsuario")).SendKeys(AdminUser);
-
-                driver.FindElement(By.Id("Contrasena")).Clear();
-                driver.FindElement(By.Id("Contrasena")).SendKeys(AdminPass);
-
-                driver.FindElement(By.CssSelector("button[type='submit']")).Click();
-
-                wait.Until(d => d.Url.Contains("/Home", StringComparison.OrdinalIgnoreCase));
-            }
-        }
-
-       
+        /// <summary>
+        /// Crea un usuario por UI y devuelve el NombreUsuario creado.
+        /// Usa Driver/Wait de BaseUiTest.
+        /// </summary>
         private string CrearUsuarioRapido()
         {
             var guid = Guid.NewGuid().ToString("N").Substring(0, 6);
@@ -71,25 +21,25 @@ namespace GestorPacientes.UITests
             var usuario = "usr" + guid;
             var pass = "Password123!";
 
-          
-            driver.Navigate().GoToUrl($"{BaseUrl}/Usuario/Index");
-            wait.Until(d => d.FindElement(By.XPath("//a[contains(., 'Crear Usuario')]"))).Click();
+            // Ir a Index y abrir Create
+            Driver.Navigate().GoToUrl($"{BaseUrl}/Usuario/Index");
+            Wait.Until(d => d.FindElement(By.XPath("//a[contains(., 'Crear Usuario')]"))).Click();
 
-            wait.Until(d => d.Url.Contains("/Usuario/Create", StringComparison.OrdinalIgnoreCase));
+            Wait.Until(d => d.Url.Contains("/Usuario/Create", StringComparison.OrdinalIgnoreCase));
 
-            
-            driver.FindElement(By.Id("Nombre")).SendKeys(nombre);
-            driver.FindElement(By.Id("Apellido")).SendKeys(apellido);
-            driver.FindElement(By.Id("Correo")).SendKeys(correo);
-            driver.FindElement(By.Id("NombreUsuario")).SendKeys(usuario);
-            driver.FindElement(By.Id("Contrasena")).SendKeys(pass);
-            driver.FindElement(By.Id("ConfirmarContrasena")).SendKeys(pass);
-            new SelectElement(driver.FindElement(By.Id("TipoUsuario"))).SelectByText("Asistente");
+            // Llenar formulario
+            Driver.FindElement(By.Id("Nombre")).SendKeys(nombre);
+            Driver.FindElement(By.Id("Apellido")).SendKeys(apellido);
+            Driver.FindElement(By.Id("Correo")).SendKeys(correo);
+            Driver.FindElement(By.Id("NombreUsuario")).SendKeys(usuario);
+            Driver.FindElement(By.Id("Contrasena")).SendKeys(pass);
+            Driver.FindElement(By.Id("ConfirmarContrasena")).SendKeys(pass);
+            new SelectElement(Driver.FindElement(By.Id("TipoUsuario"))).SelectByText("Asistente");
 
-            driver.FindElement(By.CssSelector("button[type='submit']")).Click();
+            Driver.FindElement(By.CssSelector("button[type='submit']")).Click();
 
-           
-            bool enListado = wait.Until(d =>
+            // Esperar que vuelva al listado (o al menos ver la tabla)
+            bool enListado = Wait.Until(d =>
             {
                 try
                 {
@@ -101,22 +51,22 @@ namespace GestorPacientes.UITests
                 catch (StaleElementReferenceException) { return false; }
             });
 
-            if (!enListado || !driver.Url.Contains("/Usuario", StringComparison.OrdinalIgnoreCase))
+            if (!enListado || !Driver.Url.Contains("/Usuario", StringComparison.OrdinalIgnoreCase))
             {
-                driver.Navigate().GoToUrl($"{BaseUrl}/Usuario/Index");
-                wait.Until(d => d.FindElements(By.CssSelector("table.table")).Any());
+                Driver.Navigate().GoToUrl($"{BaseUrl}/Usuario/Index");
+                Wait.Until(d => d.FindElements(By.CssSelector("table.table")).Any());
             }
 
-           
+            // Verificar que aparece en la tabla (reintentos + refresh)
             bool existe = false;
             Exception? lastEx = null;
             for (int i = 0; i < 4 && !existe; i++)
             {
                 try
                 {
-                    if (i > 0) driver.Navigate().Refresh();
+                    if (i > 0) Driver.Navigate().Refresh();
 
-                    var fila = wait.Until(d => d.FindElement(By.XPath(
+                    var fila = Wait.Until(d => d.FindElement(By.XPath(
                         $"//table//tr[td[contains(normalize-space(.), '{usuario}')]]"
                     )));
                     existe = fila != null;
@@ -131,18 +81,18 @@ namespace GestorPacientes.UITests
 
             if (!existe)
             {
-                Console.WriteLine("URL actual tras crear: " + driver.Url);
-                var html = driver.PageSource;
+                Console.WriteLine("URL actual tras crear: " + Driver.Url);
+                var html = Driver.PageSource;
                 Console.WriteLine(html.Length > 3000 ? html.Substring(0, 3000) : html);
 
-                if (driver.Url.Contains("/Usuario/Create", StringComparison.OrdinalIgnoreCase))
+                if (Driver.Url.Contains("/Usuario/Create", StringComparison.OrdinalIgnoreCase))
                 {
                     try
                     {
-                        var li = driver.FindElement(By.CssSelector(".text-danger.validation-summary-errors ul li"));
+                        var li = Driver.FindElement(By.CssSelector(".text-danger.validation-summary-errors ul li"));
                         Console.WriteLine("ValidationSummary: " + li.Text);
                     }
-                    catch { }
+                    catch { /* ignore */ }
                 }
 
                 if (lastEx != null) throw lastEx;
@@ -152,10 +102,12 @@ namespace GestorPacientes.UITests
             return usuario;
         }
 
-      
+        /// <summary>
+        /// Devuelve el href del enlace "Eliminar" para la fila que contiene el NombreUsuario dado.
+        /// </summary>
         private string GetHrefEliminarPorUsuario(string nombreUsuario)
         {
-            var fila = wait.Until(d => d.FindElement(By.XPath(
+            var fila = Wait.Until(d => d.FindElement(By.XPath(
                 $"//table//tr[td[contains(normalize-space(.), '{nombreUsuario}')]]"
             )));
             var link = fila.FindElement(By.XPath(".//a[contains(., 'Eliminar')]"));
@@ -165,50 +117,52 @@ namespace GestorPacientes.UITests
         [Test]
         public void EliminarUsuario_DeberiaDesaparecerDelListado()
         {
-          
+            // 1) Login (helper de la base)
             LoginSiEsNecesario();
+
+            // 2) Crear usuario de prueba
             string usuario = CrearUsuarioRapido();
 
-          
+            // Reafirmar autenticación por si la sesión cambió
             LoginSiEsNecesario();
 
-           
-            driver.Navigate().GoToUrl($"{BaseUrl}/Usuario/Index");
+            // 3) Ir a Index y capturar href del enlace Eliminar
+            Driver.Navigate().GoToUrl($"{BaseUrl}/Usuario/Index");
             var hrefDelete = GetHrefEliminarPorUsuario(usuario);
 
-          
-            driver.Navigate().GoToUrl(hrefDelete);
+            // 4) Ir directo a /Usuario/Delete/{id}
+            Driver.Navigate().GoToUrl(hrefDelete);
 
-           
-            if (driver.Url.Contains("/Usuario/Login", StringComparison.OrdinalIgnoreCase))
+            // Si te manda a Login, reautenticar y volver a esa URL
+            if (Driver.Url.Contains("/Usuario/Login", StringComparison.OrdinalIgnoreCase))
             {
                 LoginSiEsNecesario();
-                driver.Navigate().GoToUrl(hrefDelete);
+                Driver.Navigate().GoToUrl(hrefDelete);
             }
 
-           
-            wait.Until(d => d.Url.Contains("/Usuario/Delete", StringComparison.OrdinalIgnoreCase));
+            // 5) Confirmar que estás en Delete
+            Wait.Until(d => d.Url.Contains("/Usuario/Delete", StringComparison.OrdinalIgnoreCase));
 
-            
-            wait.Until(d => d.FindElement(By.CssSelector("form button.btn.btn-danger"))).Click();
+            // 6) Confirmar eliminación
+            Wait.Until(d => d.FindElement(By.CssSelector("form button.btn.btn-danger"))).Click();
 
-           
-            bool enIndex = wait.Until(d =>
+            // 7) Volver a Index (y si te manda a Login, reautenticar y volver)
+            bool enIndex = Wait.Until(d =>
                 d.Url.Contains("/Usuario/Index", StringComparison.OrdinalIgnoreCase) ||
                 d.FindElements(By.CssSelector("table.table")).Any()
             );
             if (!enIndex)
             {
                 LoginSiEsNecesario();
-                driver.Navigate().GoToUrl($"{BaseUrl}/Usuario/Index");
-                wait.Until(d => d.FindElements(By.CssSelector("table.table")).Any());
+                Driver.Navigate().GoToUrl($"{BaseUrl}/Usuario/Index");
+                Wait.Until(d => d.FindElements(By.CssSelector("table.table")).Any());
             }
 
-            
+            // 8) Verificar que YA NO está en la tabla
             bool sigue = false;
             for (int i = 0; i < 3 && !sigue; i++)
             {
-                var tabla = wait.Until(d => d.FindElement(By.CssSelector("table.table")));
+                var tabla = Wait.Until(d => d.FindElement(By.CssSelector("table.table")));
                 sigue = tabla.Text.Contains(usuario, StringComparison.OrdinalIgnoreCase);
                 if (sigue) System.Threading.Thread.Sleep(700);
             }

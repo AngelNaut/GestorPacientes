@@ -1,77 +1,44 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Support.UI;
+﻿using NUnit.Framework;
+using OpenQA.Selenium;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GestorPacientes.UITests
 {
-    public class EditarUsuarioTest
+    public class EditarUsuarioTest : BaseUiTest
     {
-       
-        private ChromeDriver driver;
-        private WebDriverWait wait;
-
-        private const string BaseUrl = "https://localhost:7188";
-
-        [SetUp]
-        public void SetUp()
-        {
-            var options = new ChromeOptions();
-           
-            driver = new ChromeDriver(options);
-            driver.Manage().Window.Maximize();
-            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(15);
-            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(12));
-        }
-
-        [TearDown] 
-        public void TearDown()
-        {
-            try { driver?.Quit(); }
-            finally { driver?.Dispose(); }
-            driver = null;
-        }
-
-        private void Login()
-        {
-            driver.Navigate().GoToUrl($"{BaseUrl}/Usuario/Login");
-            wait.Until(d => d.FindElement(By.Id("NombreUsuario")));
-            driver.FindElement(By.Id("NombreUsuario")).SendKeys("angel");
-            driver.FindElement(By.Id("Contrasena")).SendKeys("123");
-            driver.FindElement(By.CssSelector("button[type='submit']")).Click();
-            wait.Until(d => d.Url.Contains("/Home", StringComparison.OrdinalIgnoreCase));
-        }
-
         [Test]
         public void EditarUsuarioValido_DeberiaActualizarDatosEnIndex()
         {
-            Login();
+            // 1) Login (usa el helper de la base)
+            LoginSiEsNecesario();
 
-            driver.Navigate().GoToUrl($"{BaseUrl}/Usuario/Index");
+            // 2) Ir al listado
+            Driver.Navigate().GoToUrl($"{BaseUrl}/Usuario/Index");
 
-            
-            wait.Until(d => d.FindElement(By.CssSelector("a.btn.btn-sm.btn-warning"))).Click();
-            wait.Until(d => d.Url.Contains("/Usuario/Edit", StringComparison.OrdinalIgnoreCase));
+            // 3) Click en "Editar" del primer usuario (botón amarillo)
+            Wait.Until(d => d.FindElement(By.CssSelector("a.btn.btn-sm.btn-warning"))).Click();
 
+            // 4) Asegurar que estamos en Edit
+            Wait.Until(d => d.Url.Contains("/Usuario/Edit", StringComparison.OrdinalIgnoreCase));
+
+            // 5) Editar campos
             var nuevoNombre = "NombreEditado" + DateTime.Now.ToString("mmss");
 
-            var nombre = wait.Until(d => d.FindElement(By.Id("Nombre")));
+            var nombre = Wait.Until(d => d.FindElement(By.Id("Nombre")));
             nombre.Clear();
             nombre.SendKeys(nuevoNombre);
 
-            var apellido = driver.FindElement(By.Id("Apellido"));
+            var apellido = Driver.FindElement(By.Id("Apellido"));
             apellido.Clear();
             apellido.SendKeys("ApellidoEditado");
 
-            driver.FindElement(By.CssSelector("button[type='submit']")).Click();
+            // 6) Guardar
+            Driver.FindElement(By.CssSelector("button[type='submit']")).Click();
 
-            wait.Until(d => d.Url.Contains("/Usuario/Index", StringComparison.OrdinalIgnoreCase));
+            // 7) Volver a Index y verificar
+            Wait.Until(d => d.Url.Contains("/Usuario/Index", StringComparison.OrdinalIgnoreCase));
 
-            var tabla = wait.Until(d => d.FindElement(By.CssSelector("table.table")));
+            var tabla = Wait.Until(d => d.FindElement(By.CssSelector("table.table")));
             Assert.That(tabla.Text, Does.Contain(nuevoNombre));
             Assert.That(tabla.Text, Does.Contain("ApellidoEditado"));
         }
